@@ -142,12 +142,12 @@ def hardware(update: Update, context: CallbackContext) -> int:
     logger.info("Hardware of %s: %s", user.first_name, update.message.text)
     if update.message.text == 'USB not connecting':
         update.message.reply_text(
-            'Pick the closest question: ',
+            'I see, what kind of laptop are you using?',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='USB not connecting',
-                                      url='https://support.microsoft.com/en-us/topic/usb-port-may-stop-working-after-you-remove-or-insert-a-usb-device-1eaf82a6-04b1-2604-f096-2345d9c215ef')],
-                [InlineKeyboardButton(text='USB not connecting',
-                                      url='https://support.microsoft.com/en-us/topic/usb-port-may-stop-working-after-you-remove-or-insert-a-usb-device-1eaf82a6-04b1-2604-f096-2345d9c215ef')]
+                [InlineKeyboardButton(text='Windows',
+                                      url='https://support.microsoft.com/en-us/windows/troubleshoot-common-usb-problems-5e9a9b49-ad43-702e-083e-6107e95deb88')],
+                [InlineKeyboardButton(text='Mac',
+                                      url='https://support.apple.com/guide/mac-help/if-a-usb-device-doesnt-work-mchlp1641/mac')]
             ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
@@ -157,8 +157,8 @@ def hardware(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(
             'Here is a link that can help you: ',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Overheating',
-                                      url='https://www.makeuseof.com/tag/fix-overheating-laptop/')]
+                [InlineKeyboardButton(text='Signs and Dangers of Laptops Overheating',
+                                      url='https://www.lifewire.com/problem-with-overheating-laptops-2377646')]
             ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
@@ -168,8 +168,8 @@ def hardware(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(
             'Here is a link that can help you: ',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='WIFI not connecting',
-                                      url='https://softwarekeep.com/help-center/wifi-keeps-disconnecting-on-windows')]
+                [InlineKeyboardButton(text='How to Troubleshoot Wireless Router Problems',
+                                      url='https://www.howtogeek.com/180235/how-to-troubleshoot-wireless-router-problems/')]
             ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
