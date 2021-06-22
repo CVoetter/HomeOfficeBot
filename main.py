@@ -18,8 +18,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-PLATFORM, SUPPORT, SOLVED = range(3)
-
+PLATFORM, SUPPORT, SOLVED, HARDWARE = range(4)
 
 def start(update: Update, context: CallbackContext) -> int:
     """Starts the conversation and asks the user about topic."""
@@ -38,17 +37,27 @@ def start(update: Update, context: CallbackContext) -> int:
 def platform(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     logger.info("Problem of %s: %s", user.first_name, update.message.text)
-    reply_keyboard = [['Slack', 'Google Meet', 'Microsoft Teams', 'Discord']]
-    update.message.reply_text(
-        'I see! Please tell me which platform you are using, '
-        'so I know what support website to send you.',
-        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
-    )
+
+    if update.message.text.lower() == 'hardware problem':
+        reply_keyboard = [['USB not connecting', 'Overheating', 'WIFI not connecting', 'Back']]
+        update.message.reply_text(
+            'Alright, what kind of hardware problem do you have?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+        return HARDWARE
+    else:
+        reply_keyboard = [['Slack', 'Google Meet', 'Microsoft Teams', 'Discord', 'Back']]
+        update.message.reply_text(
+            'I see! Please tell me which platform you are using, '
+            'so I know what support website to send you.',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
 
     return SUPPORT
 
 
 def support(update: Update, context: CallbackContext) -> int:
+
     user = update.message.from_user
     logger.info("Platform of %s: %s", user.first_name, update.message.text)
     if update.message.text == 'Slack':
@@ -84,7 +93,7 @@ def support(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(
             'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
         )
-    else:
+    elif update.message.text == 'Discord':
         update.message.reply_text(
             'Please visit the link to find support',
             reply_markup=InlineKeyboardMarkup([
@@ -95,6 +104,9 @@ def support(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(
             'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
         )
+    else:
+        return start(update, context)
+
 
     return SOLVED
 
@@ -104,7 +116,7 @@ def solved(update: Update, context: CallbackContext) -> int:
     logger.info("Solved: %s", update.message.text)
 
     if update.message.text == 'Yes':
-        update.message.reply_text('Thank you! I hope we can talk again some day.')
+        update.message.reply_text('Thank you! I hope we can talk again some day. If you have more question type /start')
     else:
         update.message.reply_text(
             'I am sorry! Please contact: \n\n'
@@ -113,7 +125,6 @@ def solved(update: Update, context: CallbackContext) -> int:
             '0660/123456')
 
     return ConversationHandler.END
-
 
 
 def cancel(update: Update, context: CallbackContext) -> int:
@@ -126,6 +137,48 @@ def cancel(update: Update, context: CallbackContext) -> int:
 
     return ConversationHandler.END
 
+def hardware(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    logger.info("Hardware of %s: %s", user.first_name, update.message.text)
+    if update.message.text == 'USB not connecting':
+        update.message.reply_text(
+            'Pick the closest question: ',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='USB not connecting',
+                                      url='https://support.microsoft.com/en-us/topic/usb-port-may-stop-working-after-you-remove-or-insert-a-usb-device-1eaf82a6-04b1-2604-f096-2345d9c215ef')],
+                [InlineKeyboardButton(text='USB not connecting',
+                                      url='https://support.microsoft.com/en-us/topic/usb-port-may-stop-working-after-you-remove-or-insert-a-usb-device-1eaf82a6-04b1-2604-f096-2345d9c215ef')]
+            ]))
+        reply_keyboard = [['Yes', 'No']]
+        update.message.reply_text(
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        )
+    elif update.message.text == 'Overheating':
+        update.message.reply_text(
+            'Here is a link that can help you: ',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Overheating',
+                                      url='https://www.makeuseof.com/tag/fix-overheating-laptop/')]
+            ]))
+        reply_keyboard = [['Yes', 'No']]
+        update.message.reply_text(
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        )
+    elif update.message.text == 'WIFI not connecting':
+        update.message.reply_text(
+            'Here is a link that can help you: ',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='WIFI not connecting',
+                                      url='https://softwarekeep.com/help-center/wifi-keeps-disconnecting-on-windows')]
+            ]))
+        reply_keyboard = [['Yes', 'No']]
+        update.message.reply_text(
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        )
+    else:
+        return start(update, platform)
+
+    return SOLVED
 
 def main() -> None:
     """Run the bot."""
@@ -141,7 +194,8 @@ def main() -> None:
         states={
             PLATFORM: [MessageHandler(Filters.regex('^(No Internet|Hardware Problem|Communication Platform Problem)$'),
                                       platform)],
-            SUPPORT: [MessageHandler(Filters.regex('^(Slack|Google Meet|Microsoft Teams|Discord)$'), support)],
+            SUPPORT: [MessageHandler(Filters.regex('^(Slack|Google Meet|Microsoft Teams|Discord|Back)$'), support)],
+            HARDWARE: [MessageHandler(Filters.regex('^(USB not connecting|Overheating|WIFI not connecting|Back)$'), hardware)],
             SOLVED: [MessageHandler(Filters.regex('^(Yes|No)$'), solved)],
         },
         fallbacks=[CommandHandler('cancel', cancel)],
