@@ -1,6 +1,7 @@
 import logging
 
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update, InlineKeyboardMarkup, InlineKeyboardButton, \
+    InputMedia, Poll
 from telegram.ext import (
     Updater,
     CommandHandler,
@@ -22,7 +23,7 @@ PLATFORM, SUPPORT, SOLVED, HARDWARE = range(4)
 
 def start(update: Update, context: CallbackContext) -> int:
     """Starts the conversation and asks the user about topic."""
-    reply_keyboard = [['No Internet', 'Hardware Problem', 'Communication Platform Problem', 'I want to take a Quiz!']]
+    reply_keyboard = [['No Internet', 'Hardware Problem', 'Communication Platform Problem', 'I want to take a Quiz']]
 
     update.message.reply_text(
         'Hi! My name is HomeOfficeBot. I will hold a conversation with you. '
@@ -54,6 +55,17 @@ def platform(update: Update, context: CallbackContext) -> int:
         )
 
     return SUPPORT
+
+
+'''elif update.message.text.lower() == 'i want to take a quiz':
+        update.message.reply_text(
+            'Here you go!',
+            reply_markup=InputMedia([
+                [inputMediaPoll(
+                    #text='Home Office Quiz',
+                                      url='t.me/QuizBot?start=KSNSJCcW')]
+            ]))
+        return ConversationHandler.END'''
 
 
 def support(update: Update, context: CallbackContext) -> int:
