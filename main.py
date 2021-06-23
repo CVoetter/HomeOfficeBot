@@ -19,7 +19,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-PLATFORM, SUPPORT, SOLVED, HARDWARE = range(4)
+PLATFORM, SUPPORT, SOLVED, HARDWARE, INTERNET = range(5)
 
 def start(update: Update, context: CallbackContext) -> int:
     """Starts the conversation and asks the user about topic."""
