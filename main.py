@@ -46,6 +46,13 @@ def platform(update: Update, context: CallbackContext) -> int:
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
         return HARDWARE
+    elif  update.message.text.lower() == 'No Internet': 
+        reply_keyboard = [['slow connection', 'internet issues in Windows 10', 'Methods to reconnect']]
+        update.message.reply_text(
+            'Do you have issues with the internet connection?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+        return INTERNET
     else:
         reply_keyboard = [['Slack', 'Google Meet', 'Microsoft Teams', 'Discord', 'Back']]
         update.message.reply_text(
