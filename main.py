@@ -46,7 +46,7 @@ def platform(update: Update, context: CallbackContext) -> int:
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
         return HARDWARE
-    elif  update.message.text.lower() == 'No Internet': 
+    elif  update.message.text.lower() == 'no internet': 
         reply_keyboard = [['slow connection', 'internet issues in Windows 10', 'Methods to reconnect']]
         update.message.reply_text(
             'Do you have issues with the internet connection?',
@@ -202,11 +202,11 @@ def hardware(update: Update, context: CallbackContext) -> int:
 def internet(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     logger.info("Internet Connection problems of %s: %s", user.first_name, update.message.text)
-    if update.message.text == 'Slow connection':
+    if update.message.text == 'slow connection':
         update.message.reply_text(
             'PLease visit this link for the support ',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Slow connection',
+                [InlineKeyboardButton(text='slow connection',
                                       url='https://www.digitaltrends.com/computing/how-to-increase-your-internet-speed/')],
                 ]))
         reply_keyboard = [['Yes', 'No']]
@@ -256,7 +256,7 @@ def main() -> None:
                                       platform)],
             SUPPORT: [MessageHandler(Filters.regex('^(Slack|Google Meet|Microsoft Teams|Discord|Back)$'), support)],
             HARDWARE: [MessageHandler(Filters.regex('^(USB not connecting|Overheating|WIFI not connecting|Back)$'), hardware)],
-            INTERNET: [MessageHandler(Filters.regex('^(Slow connection|internet issues in Windows 10|Methods to reconnect)$'), internet)],
+            INTERNET: [MessageHandler(Filters.regex('^(slow connection|internet issues in Windows 10|Methods to reconnect)$'), internet)],
             SOLVED: [MessageHandler(Filters.regex('^(Yes|No)$'), solved)],
         },
         fallbacks=[CommandHandler('cancel', cancel)],
