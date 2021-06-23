@@ -199,6 +199,47 @@ def hardware(update: Update, context: CallbackContext) -> int:
 
     return SOLVED
 
+def internet(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    logger.info("Internet Connection problems of %s: %s", user.first_name, update.message.text)
+    if update.message.text == 'Slow connection':
+        update.message.reply_text(
+            'PLease visit this link for the support ',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Slow connection',
+                                      url='https://www.digitaltrends.com/computing/how-to-increase-your-internet-speed/')],
+                ]))
+        reply_keyboard = [['Yes', 'No']]
+        update.message.reply_text(
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        )
+    elif update.message.text == 'internet issues in Windows 10':
+        update.message.reply_text(
+            'Here is a link that can help you: ',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='fix connection problems in Windows 10',
+                                      url='https://support.microsoft.com/en-us/windows/fix-network-connection-issues-in-windows-10-166a28c4-14c1-bdb1-473c-09c1571455d8')]
+            ]))
+        reply_keyboard = [['Yes', 'No']]
+        update.message.reply_text(
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        )
+    elif update.message.text == 'Methods to reconnect':
+        update.message.reply_text(
+            'Here is a link that can help you: ',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='How to Fix Your Internet Connection',
+                                      url='https://www.wikihow.com/Fix-Your-Internet-Connection#:~:text=1%20Restart%20your%20computer.%20This%20may%20seem%20like,Internet%20when%20it%27s%20working%20and%20help%20determine%20')]
+            ]))
+        reply_keyboard = [['Yes', 'No']]
+        update.message.reply_text(
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        ) 
+    else:
+        return start(update, platform)
+
+    return SOLVED    
+
 def main() -> None:
     """Run the bot."""
     # Create the Updater and pass it your bot's token.
@@ -215,6 +256,7 @@ def main() -> None:
                                       platform)],
             SUPPORT: [MessageHandler(Filters.regex('^(Slack|Google Meet|Microsoft Teams|Discord|Back)$'), support)],
             HARDWARE: [MessageHandler(Filters.regex('^(USB not connecting|Overheating|WIFI not connecting|Back)$'), hardware)],
+            INTERNET: [MessageHandler(Filters.regex('^(Slow connection|internet issues in Windows 10|Methods to reconnect)$'), internet)],
             SOLVED: [MessageHandler(Filters.regex('^(Yes|No)$'), solved)],
         },
         fallbacks=[CommandHandler('cancel', cancel)],
