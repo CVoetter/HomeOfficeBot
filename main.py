@@ -47,7 +47,7 @@ def platform(update: Update, context: CallbackContext) -> int:
         )
         return HARDWARE
     elif  update.message.text.lower() == 'no internet': 
-        reply_keyboard = [['slow connection', 'internet issues in Windows 10', 'Methods to reconnect']]
+        reply_keyboard = [['slow connection', 'internet issues in Windows 10', 'Methods to reconnect', 'Back']]
         update.message.reply_text(
             'Do you have issues with the internet connection?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
@@ -63,13 +63,24 @@ def platform(update: Update, context: CallbackContext) -> int:
 
         return SOLVED
 
-    else:
+    elif update.message.text == 'Communication Platform Problem':
         reply_keyboard = [['Slack', 'Google Meet', 'Microsoft Teams', 'Discord', 'Back']]
         update.message.reply_text(
             'I see! Please tell me which platform you are using, '
             'so I know what support website to send you.',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
+        return SUPPORT
+    else:
+        reply_keyboard = [
+            ['No Internet', 'Hardware Problem', 'Communication Platform Problem', 'I want to take a Quiz']]
+
+        update.message.reply_text(
+            "Sorry, I don't understand what you are saying :( "
+            "Please consider choosing an option from the keywords, or at least the closest one to your issue!",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+        return PLATFORM
 
     return SUPPORT
 
@@ -122,10 +133,17 @@ def support(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(
             'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
         )
-    else:
+    elif update.message.text == 'Back':
         return start(update, context)
+    else:
+        reply_keyboard = [['Slack', 'Google Meet', 'Microsoft Teams', 'Discord', 'Back']]
 
-
+        update.message.reply_text(
+            "Sorry, I don't understand what you are saying :( "
+            "Please consider choosing an option from the keywords, or at least the closest one to your issue!",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+        return SUPPORT
     return SOLVED
 
 
@@ -135,13 +153,24 @@ def solved(update: Update, context: CallbackContext) -> int:
 
     if update.message.text == 'Yes':
         update.message.reply_text('Thank you! I hope we can talk again some day. If you have more question type /start')
-    else:
+    elif update.message.text == 'No':
         update.message.reply_text(
             'I am sorry! Please contact: \n\n'
             'Companies IT Support\n'
             'support@email.at\n'
             '0660/123456')
+        update.message.reply_text(
+            'Thank you! I hope we can talk again some day. If you have more question type /start'
+        )
+    else:
+        reply_keyboard = [['Yes', 'No']]
 
+        update.message.reply_text(
+            "Sorry, I don't understand what you are saying :( "
+            "Please consider choosing an option from the keywords, or at least the closest one to your issue!",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+        return SOLVED
     return ConversationHandler.END
 
 
@@ -193,8 +222,17 @@ def hardware(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(
             'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
         )
-    else:
+    elif update.message.text == 'Back':
         return start(update, platform)
+    else:
+        reply_keyboard = [['USB not connecting', 'Overheating', 'WIFI not connecting', 'Back']]
+
+        update.message.reply_text(
+            "Sorry, I don't understand what you are saying :( "
+            "Please consider choosing an option from the keywords, or at least the closest one to your issue!",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+        return HARDWARE
 
     return SOLVED
 
@@ -233,11 +271,19 @@ def internet(update: Update, context: CallbackContext) -> int:
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
             'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
-        ) 
-    else:
+        )
+    elif update.message.text == 'Back':
         return start(update, platform)
+    else:
+        reply_keyboard = [['slow connection', 'internet issues in Windows 10', 'Methods to reconnect', 'Back']]
 
-    return SOLVED    
+        update.message.reply_text(
+            "Sorry, I don't understand what you are saying :( "
+            "Please consider choosing an option from the keywords, or at least the closest one to your issue!",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+        return INTERNET
+    return SOLVED
 
 def main() -> None:
     """Run the bot."""
@@ -251,12 +297,22 @@ def main() -> None:
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
-            PLATFORM: [MessageHandler(Filters.regex('^(No Internet|Hardware Problem|Communication Platform Problem|I want to take a Quiz)$'),
-                                      platform)],
-            SUPPORT: [MessageHandler(Filters.regex('^(Slack|Google Meet|Microsoft Teams|Discord|Back)$'), support)],
-            HARDWARE: [MessageHandler(Filters.regex('^(USB not connecting|Overheating|WIFI not connecting|Back)$'), hardware)],
-            INTERNET: [MessageHandler(Filters.regex('^(slow connection|internet issues in Windows 10|Methods to reconnect)$'), internet)],
-            SOLVED: [MessageHandler(Filters.regex('^(Yes|No)$'), solved)],
+            # PLATFORM: [MessageHandler(Filters.regex('^(No Internet|Hardware Problem|Communication Platform Problem|I want to take a Quiz)$'),
+            #                           platform)],
+            PLATFORM: [MessageHandler(
+                Filters.regex('(.*?)'),
+                platform)],
+            # SUPPORT: [MessageHandler(Filters.regex('^(Slack|Google Meet|Microsoft Teams|Discord|Back)$'), support)],
+            SUPPORT: [MessageHandler(Filters.regex('(.*?)'), support)],
+
+            # HARDWARE: [MessageHandler(Filters.regex('^(USB not connecting|Overheating|WIFI not connecting|Back)$'), hardware)],
+            HARDWARE: [MessageHandler(Filters.regex('(.*?)'), hardware)],
+
+            # INTERNET: [MessageHandler(Filters.regex('^(slow connection|internet issues in Windows 10|Methods to reconnect|Back)$'), internet)],
+            INTERNET: [MessageHandler(Filters.regex('(.*?)'), internet)],
+
+            # SOLVED: [MessageHandler(Filters.regex('^(Yes|No)$'), solved)],
+            SOLVED: [MessageHandler(Filters.regex('(.*?)'), solved)],
         },
         fallbacks=[CommandHandler('cancel', cancel)],
     )
