@@ -53,6 +53,16 @@ def platform(update: Update, context: CallbackContext) -> int:
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
         return INTERNET
+
+    elif update.message.text.lower() == 'i want to take a quiz':
+        update.message.reply_text(
+            'Here you go! t.me/QuizBot?start=KSNSJCcW')
+        reply_keyboard = [['Yes', 'No']]
+        update.message.reply_text(
+            'Did you like the quiz ?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return SOLVED
+
     else:
         reply_keyboard = [['Slack', 'Google Meet', 'Microsoft Teams', 'Discord', 'Back']]
         update.message.reply_text(
@@ -62,17 +72,6 @@ def platform(update: Update, context: CallbackContext) -> int:
         )
 
     return SUPPORT
-
-
-'''elif update.message.text.lower() == 'i want to take a quiz':
-        update.message.reply_text(
-            'Here you go!',
-            reply_markup=InputMedia([
-                [inputMediaPoll(
-                    #text='Home Office Quiz',
-                                      url='t.me/QuizBot?start=KSNSJCcW')]
-            ]))
-        return ConversationHandler.END'''
 
 
 def support(update: Update, context: CallbackContext) -> int:
@@ -252,7 +251,7 @@ def main() -> None:
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
-            PLATFORM: [MessageHandler(Filters.regex('^(No Internet|Hardware Problem|Communication Platform Problem)$'),
+            PLATFORM: [MessageHandler(Filters.regex('^(No Internet|Hardware Problem|Communication Platform Problem|I want to take a Quiz)$'),
                                       platform)],
             SUPPORT: [MessageHandler(Filters.regex('^(Slack|Google Meet|Microsoft Teams|Discord|Back)$'), support)],
             HARDWARE: [MessageHandler(Filters.regex('^(USB not connecting|Overheating|WIFI not connecting|Back)$'), hardware)],
