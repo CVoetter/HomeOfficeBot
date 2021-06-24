@@ -19,15 +19,15 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-PLATFORM, SUPPORT, SOLVED, HARDWARE, INTERNET = range(5)
+PLATFORM, SUPPORT, SOLVED, HARDWARE, INTERNET, SOLVEDQ = range(6)
 
 def start(update: Update, context: CallbackContext) -> int:
     """Starts the conversation and asks the user about topic."""
-    reply_keyboard = [['No Internet', 'Hardware Problem', 'Communication Platform Problem', 'I want to take a Quiz']]
+    reply_keyboard = [['Internet Problem', 'Hardware Problem', 'Communication Platform Problem', 'I want to take a Quiz \U0001F47E']]
 
     update.message.reply_text(
-        'Hi! My name is HomeOfficeBot. I will hold a conversation with you. '
-        'Send /cancel to stop talking to me.\n\n'
+        'Hi! My name is HomeOfficeBot. I will hold a conversation with you.\n'
+        'Send /cancel to stop talking to me and navigate with the buttons on your keyboard!\n\n'
         'What topic would you like to know more about?',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
@@ -40,31 +40,30 @@ def platform(update: Update, context: CallbackContext) -> int:
     logger.info("Problem of %s: %s", user.first_name, update.message.text)
 
     if update.message.text.lower() == 'hardware problem':
-        reply_keyboard = [['USB not connecting', 'Overheating', 'WIFI not connecting', 'Back']]
+        reply_keyboard = [['USB not connecting', 'Overheating', 'WIFI not connecting', '\U0001F519']]
         update.message.reply_text(
             'Alright, what kind of hardware problem do you have?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
         return HARDWARE
-    elif  update.message.text.lower() == 'no internet': 
-        reply_keyboard = [['slow connection', 'internet issues in Windows 10', 'Methods to reconnect', 'Back']]
+    elif  update.message.text.lower() == 'internet problem':
+        reply_keyboard = [['Slow connection', 'Internet issues in Windows 10', 'Methods to reconnect', '\U0001F519']]
         update.message.reply_text(
             'Do you have issues with the internet connection?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
         return INTERNET
 
-    elif update.message.text.lower() == 'i want to take a quiz':
+    elif update.message.text == 'I want to take a Quiz \U0001F47E':
         update.message.reply_text(
-            'Here you go! t.me/QuizBot?start=KSNSJCcW')
+            'Here you go! Press start when the Quiz Bot opens: \n t.me/QuizBot?start=KSNSJCcW')
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
-            'Did you like the quiz ?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-
-        return SOLVED
+            'Did you like the quiz?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True))
+        return SOLVEDQ
 
     elif update.message.text == 'Communication Platform Problem':
-        reply_keyboard = [['Slack', 'Google Meet', 'Microsoft Teams', 'Discord', 'Back']]
+        reply_keyboard = [['Slack', 'Google Meet', 'Microsoft Teams', 'Discord', '\U0001F519']]
         update.message.reply_text(
             'I see! Please tell me which platform you are using, '
             'so I know what support website to send you.',
@@ -73,7 +72,7 @@ def platform(update: Update, context: CallbackContext) -> int:
         return SUPPORT
     else:
         reply_keyboard = [
-            ['No Internet', 'Hardware Problem', 'Communication Platform Problem', 'I want to take a Quiz']]
+            ['Internet Problem', 'Hardware Problem', 'Communication Platform Problem', 'I want to take a Quiz \U0001F47E']]
 
         update.message.reply_text(
             "Sorry, I don't understand what you are saying :( "
@@ -98,7 +97,7 @@ def support(update: Update, context: CallbackContext) -> int:
             ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
-            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True)
         )
     elif update.message.text == 'Google Meet':
         update.message.reply_text(
@@ -109,7 +108,7 @@ def support(update: Update, context: CallbackContext) -> int:
             ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
-            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True)
         )
     elif update.message.text == 'Microsoft Teams':
         update.message.reply_text(
@@ -120,7 +119,7 @@ def support(update: Update, context: CallbackContext) -> int:
             ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
-            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True)
         )
     elif update.message.text == 'Discord':
         update.message.reply_text(
@@ -131,12 +130,12 @@ def support(update: Update, context: CallbackContext) -> int:
             ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
-            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True)
         )
-    elif update.message.text == 'Back':
+    elif update.message.text == '\U0001F519':
         return start(update, context)
     else:
-        reply_keyboard = [['Slack', 'Google Meet', 'Microsoft Teams', 'Discord', 'Back']]
+        reply_keyboard = [['Slack', 'Google Meet', 'Microsoft Teams', 'Discord', '\U0001F519']]
 
         update.message.reply_text(
             "Sorry, I don't understand what you are saying :( "
@@ -156,6 +155,33 @@ def solved(update: Update, context: CallbackContext) -> int:
     elif update.message.text == 'No':
         update.message.reply_text(
             'I am sorry! Please contact: \n\n'
+            'Companies IT Support\n'
+            'support@email.at\n'
+            '0660/123456')
+        update.message.reply_text(
+            'Thank you! I hope we can talk again some day. If you have more question type /start'
+        )
+    else:
+        reply_keyboard = [['Yes', 'No']]
+
+        update.message.reply_text(
+            "Sorry, I don't understand what you are saying :( "
+            "Please consider choosing an option from the keywords, or at least the closest one to your issue!",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True),
+        )
+        return SOLVED
+    return ConversationHandler.END
+
+
+def solvedq(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    logger.info("Solved: %s", update.message.text)
+
+    if update.message.text == 'Yes':
+        update.message.reply_text('Thank you! I hope we can talk again some day. If you have more question type /start')
+    elif update.message.text == 'No':
+        update.message.reply_text(
+            'I am sorry! Please send feedback to: \n\n'
             'Companies IT Support\n'
             'support@email.at\n'
             '0660/123456')
@@ -198,7 +224,7 @@ def hardware(update: Update, context: CallbackContext) -> int:
             ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
-            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True)
         )
     elif update.message.text == 'Overheating':
         update.message.reply_text(
@@ -209,7 +235,7 @@ def hardware(update: Update, context: CallbackContext) -> int:
             ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
-            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True)
         )
     elif update.message.text == 'WIFI not connecting':
         update.message.reply_text(
@@ -220,12 +246,12 @@ def hardware(update: Update, context: CallbackContext) -> int:
             ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
-            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True)
         )
-    elif update.message.text == 'Back':
+    elif update.message.text == '\U0001F519':
         return start(update, platform)
     else:
-        reply_keyboard = [['USB not connecting', 'Overheating', 'WIFI not connecting', 'Back']]
+        reply_keyboard = [['USB not connecting', 'Overheating', 'WIFI not connecting', '\U0001F519']]
 
         update.message.reply_text(
             "Sorry, I don't understand what you are saying :( "
@@ -248,9 +274,9 @@ def internet(update: Update, context: CallbackContext) -> int:
                 ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
-            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True)
         )
-    elif update.message.text == 'internet issues in Windows 10':
+    elif update.message.text == 'Internet issues in Windows 10':
         update.message.reply_text(
             'Here is a link that can help you: ',
             reply_markup=InlineKeyboardMarkup([
@@ -259,7 +285,7 @@ def internet(update: Update, context: CallbackContext) -> int:
             ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
-            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True)
         )
     elif update.message.text == 'Methods to reconnect':
         update.message.reply_text(
@@ -270,12 +296,12 @@ def internet(update: Update, context: CallbackContext) -> int:
             ]))
         reply_keyboard = [['Yes', 'No']]
         update.message.reply_text(
-            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+            'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True)
         )
-    elif update.message.text == 'Back':
+    elif update.message.text == '\U0001F519':
         return start(update, platform)
     else:
-        reply_keyboard = [['slow connection', 'internet issues in Windows 10', 'Methods to reconnect', 'Back']]
+        reply_keyboard = [['Slow connection', 'Internet issues in Windows 10', 'Methods to reconnect', '\U0001F519']]
 
         update.message.reply_text(
             "Sorry, I don't understand what you are saying :( "
@@ -297,7 +323,7 @@ def main() -> None:
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
-            # PLATFORM: [MessageHandler(Filters.regex('^(No Internet|Hardware Problem|Communication Platform Problem|I want to take a Quiz)$'),
+            # PLATFORM: [MessageHandler(Filters.regex('^(Internet Problem|Hardware Problem|Communication Platform Problem|I want to take a Quiz)$'),
             #                           platform)],
             PLATFORM: [MessageHandler(
                 Filters.regex('(.*?)'),
@@ -313,6 +339,8 @@ def main() -> None:
 
             # SOLVED: [MessageHandler(Filters.regex('^(Yes|No)$'), solved)],
             SOLVED: [MessageHandler(Filters.regex('(.*?)'), solved)],
+
+            SOLVEDQ: [MessageHandler(Filters.regex('(.*?)'), solvedq)],
         },
         fallbacks=[CommandHandler('cancel', cancel)],
     )
