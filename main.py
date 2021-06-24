@@ -47,7 +47,7 @@ def platform(update: Update, context: CallbackContext) -> int:
         )
         return HARDWARE
     elif  update.message.text.lower() == 'no internet': 
-        reply_keyboard = [['slow connection', 'internet issues in Windows 10', 'Methods to reconnect', 'Back']]
+        reply_keyboard = [['slow connection', 'Fix issues in Windows 10', 'Methods to reconnect', 'Back']]
         update.message.reply_text(
             'Do you have issues with the internet connection?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
@@ -250,7 +250,7 @@ def internet(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(
             'Did you find a solution?', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
         )
-    elif update.message.text == 'internet issues in Windows 10':
+    elif update.message.text == 'Fix issues in Windows 10':
         update.message.reply_text(
             'Here is a link that can help you: ',
             reply_markup=InlineKeyboardMarkup([
@@ -308,7 +308,7 @@ def main() -> None:
             # HARDWARE: [MessageHandler(Filters.regex('^(USB not connecting|Overheating|WIFI not connecting|Back)$'), hardware)],
             HARDWARE: [MessageHandler(Filters.regex('(.*?)'), hardware)],
 
-            # INTERNET: [MessageHandler(Filters.regex('^(slow connection|internet issues in Windows 10|Methods to reconnect|Back)$'), internet)],
+            # INTERNET: [MessageHandler(Filters.regex('^(slow connection|Fix issues in Windows 10|Methods to reconnect|Back)$'), internet)],
             INTERNET: [MessageHandler(Filters.regex('(.*?)'), internet)],
 
             # SOLVED: [MessageHandler(Filters.regex('^(Yes|No)$'), solved)],
