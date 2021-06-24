@@ -47,7 +47,7 @@ def platform(update: Update, context: CallbackContext) -> int:
         )
         return HARDWARE
     elif  update.message.text.lower() == 'no internet': 
-        reply_keyboard = [['slow connection', 'internet issues in Windows 10', 'Methods to reconnect', 'Back']]
+        reply_keyboard = [['slow connection', 'internet issues in Windows 10', 'Methods to reconnect']]
         update.message.reply_text(
             'Do you have issues with the internet connection?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
